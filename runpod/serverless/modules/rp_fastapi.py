@@ -12,6 +12,7 @@ import requests
 from fastapi import FastAPI, APIRouter
 from fastapi.encoders import jsonable_encoder
 from fastapi.responses import RedirectResponse
+from fastapi.middleware.cors import CORSMiddleware
 
 from .rp_handler import is_generator
 from .rp_job import run_job, run_job_generator
@@ -208,6 +209,15 @@ class WorkerAPI:
             version=runpod_version,
             docs_url="/",
             openapi_tags=tags_metadata
+        )
+
+               # Add CORS middleware
+        self.rp_app.add_middleware(
+            CORSMiddleware,
+            allow_origins=["*"],  # You can specify specific domains instead of "*"
+            allow_credentials=True,
+            allow_methods=["*"],  # You can restrict methods if needed
+            allow_headers=["*"],  # You can restrict headers if needed
         )
 
         # Create an APIRouter and add the route for processing jobs.
