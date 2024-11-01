@@ -3,18 +3,17 @@ HTTP Client abstractions
 """
 
 import os
+
 import requests
-from aiohttp import (
-    ClientSession,
-    ClientTimeout,
-    TCPConnector,
-)
-from .tracer import (
-    create_aiohttp_tracer,
-    create_request_tracer,
-)
+from aiohttp import ClientSession, ClientTimeout, TCPConnector, ClientResponseError
+
 from .cli.groups.config.functions import get_credentials
+from .tracer import create_aiohttp_tracer, create_request_tracer
 from .user_agent import USER_AGENT
+
+
+class TooManyRequests(ClientResponseError):
+    pass
 
 
 def get_auth_header():
@@ -34,7 +33,7 @@ def get_auth_header():
     }
 
 
-def AsyncClientSession(*args, **kwargs): # pylint: disable=invalid-name
+def AsyncClientSession(*args, **kwargs):  # pylint: disable=invalid-name
     """
     Deprecation from aiohttp.ClientSession forbids inheritance.
     This is now a factory method
